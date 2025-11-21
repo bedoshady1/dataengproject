@@ -28,7 +28,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-DATA_URL = "https://drive.google.com/uc?export=download&id=14EZLtF-xRSMVs_MnJj507-rPJWZg-0WP"
+DATA_PATH = "cleaned_integrated_nyc_crashes.zip"
 
 COLORS_LIGHT = {
     'bg': '#f5f7fb',
@@ -71,26 +71,24 @@ COLORS_DARK = {
 # ============================================================================
 
 @lru_cache(maxsize=1)
-def load_data(path: str = DATA_URL) -> pd.DataFrame:
+def load_data(path: str = DATA_PATH) -> pd.DataFrame:
     try:
-        logger.info(f"Loading data from {path}")
-        df = pd.read_csv(path, low_memory=False)
+        logger.info(f"Loading data from local file: {path}")
+        # IMPORTANT: tell pandas it's a ZIP
+        df = pd.read_csv(path, compression="zip", low_memory=False)
 
         df.columns = [c.strip() for c in df.columns]
         logger.info(f"Raw columns from source: {list(df.columns)}")
         logger.info(f"Loaded {len(df):,} records successfully")
 
-        # pick the correct date column
         possible_date_cols = ["CRASH DATE", "Crash Date", "CRASH_DATE", "crash_date"]
         date_col = next((c for c in possible_date_cols if c in df.columns), None)
         if not date_col:
             raise ValueError(
                 f"No crash date column found. Available columns: {list(df.columns)}"
             )
-
         if date_col != "CRASH DATE":
             df.rename(columns={date_col: "CRASH DATE"}, inplace=True)
-
         df["CRASH DATE"] = pd.to_datetime(df["CRASH DATE"], errors="coerce")
 
         if "CRASH_YEAR" not in df.columns:
@@ -128,7 +126,6 @@ def load_data(path: str = DATA_URL) -> pd.DataFrame:
         for col in ["NUMBER OF PERSONS KILLED", "NUMBER OF PERSONS INJURED"]:
             if col not in df.columns:
                 df[col] = 0
-
         df["SEVERITY_SCORE"] = (
             df["NUMBER OF PERSONS KILLED"] * 10
             + df["NUMBER OF PERSONS INJURED"]
@@ -141,7 +138,6 @@ def load_data(path: str = DATA_URL) -> pd.DataFrame:
         logger.error(f"Error loading data: {str(e)}")
         raise
 
-# 2) CALL load_data AFTER the function definition
 df = load_data()
 # ============================================================================
 # DROPDOWN OPTIONS & HELPERS
