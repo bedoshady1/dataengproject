@@ -816,7 +816,8 @@ app.layout = dbc.Container(
                                         style={
                                             'fontSize': '1.9rem',
                                             'marginBottom': '6px',
-                                            'fontWeight': 700
+                                            'fontWeight': 700,
+                                            'color': 'white',
                                         }
                                     ),
                                     html.P(
