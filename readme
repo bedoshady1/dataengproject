@@ -1,1 +1,128 @@
-empty
+🚖 NYC Motor Vehicle Collisions Analysis
+
+Course: Data Engineering and Visualization (Winter 2025)
+
+Institution: German International University
+
+Project Milestone: 1
+
+📌 Project Overview
+
+This project navigates the complete Data Engineering process using real-world data from NYC Open Data. We constructed an ETL (Extract, Transform, Load) pipeline to clean, standardize, and integrate over 2 million crash records with person-level data.
+
+The final output is an Interactive Web Dashboard built with Python Dash & Plotly, allowing users to explore crash trends, hotspots, and contributing factors dynamically.
+
+🚀 Features
+
+Data Integration: Merges "Motor Vehicle Collisions - Crashes" with "Persons" data.
+
+Interactive Dashboard:
+
+Dropdown Filters: Filter by Borough and Vehicle Type.
+
+Search Mode: Type queries like "Brooklyn 2022 pedestrian" to auto-filter data.
+
+"Generate Report" Button: Updates all visualizations on demand to ensure performance.
+
+Advanced Visualizations: Includes geospatial maps, heatmaps of crash times, and seasonality trends.
+
+🛠️ Installation & Local Setup
+
+To run this project locally on your machine, follow these steps:
+
+
+2. Install Dependencies
+
+Ensure you have Python installed. Install the required libraries using pip:
+
+pip install -r requirements.txt
+
+
+(Note: If requirements.txt is missing, install: pandas plotly dash gunicorn)
+
+3. Prepare the Data
+
+Ensure the data file is located at data/nyc_crashes_final.zip.
+
+Important: The zip file must contain only the nyc_crashes_final.csv file.
+
+If you encounter a "Multiple files found" error, unzip the file, remove any hidden folders (like .ipynb_checkpoints), and re-zip just the CSV.
+
+4. Run the Application
+
+python app.py
+
+
+Open your web browser and go to http://127.0.0.1:8050/.
+
+☁️ Deployment
+
+This application is designed to be deployed on cloud platforms like Render or Vercel.
+
+Source: The code is hosted on GitHub.
+
+Build Command: pip install -r requirements.txt
+
+Start Command: gunicorn app:server (for Render) or python app.py (for local/testing).
+
+Data Handling: The dataset is compressed (.zip) to adhere to GitHub's file size limits (<100MB) while maintaining over 1 million rows of data.
+
+👥 Team Members & Contributions
+
+👤 Member 1: Farida (Setup & Data Loading)
+
+Role: Initial Setup
+
+Initialized the environment and loaded raw data from NYC Open Data APIs.
+
+Parsed datetime columns to enable temporal analysis (Year/Month/Hour).
+
+Removed duplicate crash records to ensure data integrity.
+
+👤 Member 2: Roba (Cleaning & Standardization)
+
+Role: Data Cleaning
+
+Standardized Borough names (e.g., "BKLYN" → "BROOKLYN") and imputed missing values using the Mode.
+
+Cleaned "Contributing Factors" by removing numeric garbage data.
+
+Grouped high-cardinality vehicle types (e.g., "4 dr sedan" → "Sedan") for better dashboard filtering.
+
+👤 Member 3: Sara (Data Integration)
+
+Role: Merging Datasets
+
+Aggregated the "Persons" dataset by COLLISION_ID to prevent row explosion.
+
+Performed a Left Join to integrate person counts into the main Crashes dataset.
+
+Handled post-integration null values and optimized data types for memory efficiency.
+
+👤 Member 4: Omar (Visualization & Optimization)
+
+Role: EDA & Export
+
+Created 10 interactive visualizations using Plotly Express (Maps, Heatmaps, Bar Charts).
+
+Optimized the final dataset for web deployment by removing unused text columns (Street Names) to keep file size under 100MB.
+
+👤 Member 5: Abdelrahman (Website & Reporting)
+
+Role: Web Development
+
+Built the Dash application layout and logic.
+
+Implemented the "Generate Report" interactivity and Search Mode.
+
+Deployed the application and compiled the final project findings.
+
+📂 Project Structure
+
+├── app.py                  # Main Dash application code
+├── data/
+│   └── nyc_crashes_final.zip # Processed & compressed dataset
+├── assets/                 # CSS/Images for the dashboard
+├── notebook.ipynb          # Jupyter Notebook with full ETL pipeline & analysis
+├── requirements.txt        # Python dependencies
+└── README.md               # Project documentation
